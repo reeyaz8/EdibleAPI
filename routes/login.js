@@ -2,25 +2,35 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 var MongoClient = require('mongodb').MongoClient;
+
 router.post('', (req, res)=> 
     MongoClient.connect(process.env.mongoDBConnector, {useNewUrlParser: true ,useUnifiedTopology: true}).then(function(db){
         db.db('Login').collection('Credentials').findOne({phone:req.body.phone})
         .then((data) =>{
-            if(!data) res.status(404).send('No User');
+            if(!data) {
+                let err = new Error("Invalid Username");
+                err.status = 404;
+                throw err;
+            }
             return data;
         })
         .then(async(data)=> {
             const validPass = await bcrypt.compare(req.body.password, data.password)
-            if(!validPass) res.status(401).send('Invalid Authorization')
+            if(!validPass) {
+                let err = new Error("Invalid Password");
+                err.status = 401;
+                throw err;
+            }
             return data;
         })
         .then((data) => {
-            var token = jwt.sign({phone:req.body.phone, random: Math.random() * (100000000000 - 1000) + 1000}, process.env.JWT_SECRET_KEY, {algorithm:'HS256'})
-            res.status(200).send({uid: data._id, token:token})
+            db.db('Login').collection('CustomerDetail').findOne({_id:data._id}).then((data)=> {
+            res.status(200).send({name: data.name, gender:data.gender})
+            })
             return;
         })
         .catch(function(error) {
-            res.status(500).send('Invalid')
+            res.status(error.status).send(error.Error)
         })
     })
 );

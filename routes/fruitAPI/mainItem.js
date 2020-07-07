@@ -10,7 +10,7 @@ router.get('', (req, res) => {
     var finalData = Object();
     
     MongoClient.connect(process.env.mongoDBConnector, {useNewUrlParser: true ,useUnifiedTopology: true}).then(function(db) {
-        db.db(req.query.databaseName).collection('MainPage').find({}, 
+        db.db('Fruit').collection('MainPage').find({}, 
         ).toArray(async(err, result) => {
             if (err) throw res.status(400).send('Error')
             for (i =0; i< result[0]['recommend'].length; i++){
