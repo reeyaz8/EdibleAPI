@@ -21,6 +21,11 @@ const Vegetable_allItem_route = require('./routes/vegetableAPI/allItem');
 const Vegetable_mainItem_route = require('./routes/vegetableAPI/mainItem');
 const Vegetable_Search_route = require('./routes/vegetableAPI/searchItem');
 
+const Beverages_mainItem_route = require('./routes/beveragesAPI/mainItem');
+const Beverages_allItem_route = require('./routes/beveragesAPI/allItem');
+const Beverages_Search_route = require('./routes/beveragesAPI/searchItem');
+
+
 const Sample_route = require('./routes/sample');
 
 app.use('/edible/login', login_route);
@@ -35,6 +40,9 @@ app.use('/edible/vegetable/allItem', Vegetable_allItem_route);
 app.use('/edible/vegetable/mainItem', Vegetable_mainItem_route);
 app.use('/edible/vegetable/search', Vegetable_Search_route);
 
+app.use('/edible/beverages/mainItem', Beverages_mainItem_route);
+app.use('/edible/beverages/allItem', Beverages_allItem_route);
+app.use('/edible/beverages/search', Beverages_Search_route);
 
 app.listen(3000, '192.168.254.8' ,()=>{
     console.log('app is running')
