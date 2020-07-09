@@ -5,7 +5,7 @@ var MongoClient = require('mongodb').MongoClient;
 
 router.post('', (req, res, next) => {
     MongoClient.connect(process.env.mongoDBConnector, {useNewUrlParser: true ,useUnifiedTopology: true}).then((db) => {
-        db.db('Login').collection('Credentials').findOne({username:req.body.phone},{projection:{_id:0, phone:1}}).then((data)=> {
+        db.db('Login').collection('Credentials').findOne({phone:req.body.phone},{projection:{_id:0, phone:1}}).then((data)=> {
             if(data != null){
                 let err = new Error("Already Exists");
                 err.status = 409;
@@ -17,7 +17,6 @@ router.post('', (req, res, next) => {
             const salting = await bcrypt.genSalt(8);
             const hashpassword = await bcrypt.hash(req.body.password, salting);
             return hashpassword;
-
         })
         .then((hashpassword) => {
             const newUserCredentials = {
